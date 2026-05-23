@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "PowerShell(Get-Command node, npm, pnpm, yarn -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\nodejs\", \"C:\\\\Program Files \\(x86\\)\\\\nodejs\", \"$env:APPDATA\\\\npm\", \"$env:LOCALAPPDATA\\\\Programs\\\\nodejs\" -ErrorAction SilentlyContinue | Select-Object FullName)",
+      "Bash(mkdir -p '/c/Users/MSI CYBORG I5/node-portable')",
+      "Bash(curl -L --progress-bar https://nodejs.org/dist/latest-v22.x/node-v22.22.3-win-x64.zip -o '/c/Users/MSI CYBORG I5/node-portable/node.zip')",
+      "Bash(unzip -q node.zip)",
+      "Bash('/c/Users/MSI CYBORG I5/node-portable/node-v22.22.3-win-x64/node.exe' --version)",
+      "Bash('/c/Users/MSI CYBORG I5/node-portable/node-v22.22.3-win-x64/npm.cmd' --version)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -H \"api-key: dzq2zwObMjmdM4eUPjOvP\" \"https://api.bible/v1/bibles\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -H \"api-key: dzq2zwObMjmdM4eUPjOvP\" \"https://rest.api.bible/v1/bibles\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -H \"api-key: dzq2zwObMjmdM4eUPjOvP\" \"https://api.scripture.api.bible/v1/bibles\")",
+      "Bash(where flutter *)",
+      "Bash(where dart *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\Projects\\\\Bible Journal\" -Force)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Projects\\\\Bible Journal\" -Force | Select-Object Mode, Name, @{Name=\"SizeKB\";Expression={[math]::Round\\($_.Length/1KB,2\\)}} | Format-Table -AutoSize)"
+    ]
+  }
+}

@@ -1,0 +1,872 @@
+/* ── Reset & base ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:        #fdf8f2;
+  --parchment:    #f5ede0;
+  --border:       #e0d4c4;
+  --ink:          #2c2416;
+  --muted:        #7a6a56;
+  --accent:       #6b4c2a;
+  --accent-light: #c9a87a;
+  --accent-bg:    #f9f2e8;
+  --selected-bg:  #f0e6d3;
+  --selected-border: #b8895a;
+  --green:        #3a6644;
+  --radius:       6px;
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans:  'Inter', system-ui, sans-serif;
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Home page ───────────────────────────────────────────────── */
+.home {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #2c1a0e 0%, #5c3d1e 60%, #8a5c2e 100%);
+  color: #fdf8f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.25rem 4rem;
+  gap: 1.5rem;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.home-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  margin-bottom: 0.25rem;
+}
+
+.home-title {
+  font-family: var(--font-serif);
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: #fdf8f2;
+  line-height: 1.1;
+}
+
+.home-date {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(253, 248, 242, 0.6);
+}
+
+/* Stats row */
+.stats-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.stat-card {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.stat-icon  { font-size: 1.5rem; }
+.stat-number {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  color: #fdf8f2;
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(253, 248, 242, 0.55);
+}
+
+/* Nudge / status line */
+.home-nudge {
+  font-size: 0.82rem;
+  color: rgba(253, 248, 242, 0.7);
+  text-align: center;
+  font-style: italic;
+  margin-top: -0.5rem;
+}
+.home-nudge--done { color: #8ecf9e; font-style: normal; }
+
+/* Cards */
+.home-card {
+  width: 100%;
+  max-width: 520px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.home-card-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  margin-bottom: 0.65rem;
+}
+
+/* Verse of the day */
+.vod-text {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #fdf8f2;
+  quotes: none;
+  margin-bottom: 0.6rem;
+  font-style: italic;
+}
+
+.vod-ref {
+  font-size: 0.78rem;
+  color: var(--accent-light);
+  font-style: normal;
+}
+
+/* Today's reading */
+.today-refs {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: #fdf8f2;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.today-dot {
+  color: rgba(253, 248, 242, 0.35);
+}
+
+/* CTA button */
+.btn-open-journal {
+  margin-top: 0.5rem;
+  padding: 0.85rem 2.5rem;
+  background: #fdf8f2;
+  color: var(--accent);
+  border: none;
+  border-radius: 50px;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+
+.btn-open-journal:hover {
+  background: white;
+  transform: translateY(-1px);
+}
+
+.btn-open-journal:active {
+  transform: translateY(0);
+}
+
+/* Back button on journal page */
+.btn-back {
+  display: inline-block;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.3rem 0.85rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-back:hover { color: var(--accent); border-color: var(--accent-light); }
+
+/* ── App layout ──────────────────────────────────────────────── */
+.app {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.app-header {
+  text-align: center;
+  padding: 2.5rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+
+.app-title {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+
+.app-date {
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.app-readings {
+  margin-top: 0.5rem;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* ── Passage card (passage + journal + commentary together) ───── */
+.passage-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+/* Passage header / body */
+.passage-card-header {
+  padding: 1.5rem 1.75rem 0;
+}
+
+.passage-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.passage-reference {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.passage-loading {
+  padding: 1rem 1.75rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.passage-error {
+  margin: 1rem 1.75rem;
+  background: var(--parchment);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+}
+
+.passage-error ol {
+  margin-top: 0.75rem;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.passage-error code {
+  background: var(--border);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.passage-text {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--ink);
+  padding: 0 1.75rem 1.75rem;
+}
+
+.passage-text span[data-number] {
+  font-size: 0.62em;
+  vertical-align: super;
+  color: var(--accent-light);
+  margin-right: 2px;
+  font-family: var(--font-sans);
+}
+
+/* ── Divider between sections within a card ──────────────────── */
+.passage-card > .journal-form,
+.passage-card > .commentary {
+  border-top: 1px solid var(--border);
+}
+
+/* ── Verse selector ──────────────────────────────────────────── */
+.verse-selector {
+  padding: 1.25rem 1.75rem;
+  border-top: 1px solid var(--border);
+  background: var(--accent-bg);
+}
+
+.vs-heading {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.vs-hint {
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--accent-light);
+}
+
+.vs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Scrollbar styling */
+.vs-list::-webkit-scrollbar { width: 4px; }
+.vs-list::-webkit-scrollbar-track { background: transparent; }
+.vs-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.vs-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--ink);
+  line-height: 1.5;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.vs-item:hover {
+  border-color: var(--accent-light);
+  background: var(--parchment);
+}
+
+.vs-item--on {
+  background: var(--selected-bg);
+  border-color: var(--selected-border);
+  color: var(--ink);
+}
+
+.vs-item--on:hover {
+  background: #e8d8c0;
+}
+
+.vs-num {
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--accent-light);
+  min-width: 1.5rem;
+  padding-top: 0.15em;
+}
+
+.vs-item--on .vs-num {
+  color: var(--accent);
+}
+
+.vs-text {
+  flex: 1;
+}
+
+.vs-count {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.vs-clear {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.vs-clear:hover { color: var(--accent); }
+
+/* ── Selected verse preview (inside journal form) ────────────── */
+.selected-verses-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.svp-block {
+  background: var(--accent-bg);
+  border-left: 3px solid var(--accent-light);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 0.75rem 1rem;
+  margin: 0;
+}
+
+.svp-text {
+  font-family: var(--font-serif);
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: var(--ink);
+  font-style: italic;
+}
+
+.svp-ref {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.73rem;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+/* ── Journal form ────────────────────────────────────────────── */
+.journal-form {
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.field-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: var(--ink);
+  resize: vertical;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--accent-light);
+  background: white;
+}
+
+.field-input::placeholder { color: #b8a898; }
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 0.1rem;
+}
+
+.btn-save {
+  padding: 0.5rem 1.35rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-save:hover { background: #5a3d20; }
+
+.save-confirm {
+  font-size: 0.83rem;
+  color: var(--green);
+  font-weight: 500;
+}
+
+/* ── Commentary ──────────────────────────────────────────────── */
+.commentary {
+  padding: 1.25rem 1.75rem;
+  background: var(--cream);
+}
+
+.btn-commentary {
+  padding: 0.45rem 1.1rem;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  width: 100%;
+}
+
+.btn-commentary:hover {
+  border-color: var(--accent-light);
+  color: var(--accent);
+  border-style: solid;
+}
+
+.commentary-panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+}
+
+.commentary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.btn-close {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.25rem 0.65rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.btn-close:hover { color: var(--ink); }
+
+.commentary-empty {
+  font-size: 0.875rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.commentary-verses {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.commentary-verse-block {
+  border-left: 3px solid var(--accent-light);
+  padding-left: 1rem;
+}
+
+.commentary-verse-ref {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.commentary-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.commentary-links li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.commentary-links a {
+  color: var(--accent);
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.commentary-links a:hover {
+  border-color: var(--accent);
+}
+
+.commentary-source-note {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* ── History page ────────────────────────────────────────────── */
+.hist-storage-note {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.hist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Empty state */
+.hist-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+}
+.hist-empty-icon  { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.hist-empty-title { font-family: var(--font-serif); font-size: 1.2rem; color: var(--ink); margin-bottom: 0.4rem; }
+.hist-empty-body  { font-size: 0.9rem; }
+
+/* Entry card */
+.hist-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.hist-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.hist-card--open  { border-color: var(--accent-light); }
+
+.hist-card-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  gap: 1rem;
+}
+.hist-card-header:hover { background: var(--cream); }
+
+.hist-card-meta   { display: flex; flex-direction: column; gap: 0.2rem; }
+.hist-card-date   { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; color: var(--ink); }
+.hist-card-refs   { font-size: 0.78rem; color: var(--muted); font-style: italic; }
+.hist-card-chevron { font-size: 0.7rem; color: var(--muted); flex-shrink: 0; }
+
+/* Collapsed preview */
+.hist-card-preview {
+  padding: 0 1.25rem 0.9rem;
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.5;
+  border-top: 1px dashed var(--border);
+  padding-top: 0.75rem;
+
+  /* Clamp to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hist-card-preview--muted { font-style: normal; font-size: 0.8rem; }
+
+/* Expanded body */
+.hist-card-body {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--cream);
+}
+
+/* Passage section within expanded card */
+.hist-passage { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.hist-passage-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.hist-passage-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: white;
+  background: var(--accent);
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+}
+.hist-passage-ref {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Verse quotes */
+.hist-verses { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.hist-verse-block {
+  background: white;
+  border-left: 3px solid var(--accent-light);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 0.65rem 0.9rem;
+  margin: 0;
+}
+.hist-verse-text {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--ink);
+}
+.hist-verse-sid-only {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.hist-verse-ref {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+/* Journal fields in history */
+.hist-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.hist-field { display: flex; flex-direction: column; gap: 0.2rem; }
+.hist-field-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+}
+.hist-field-value {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ink);
+  white-space: pre-wrap;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+}
+
+.hist-empty-entry {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+/* Past entries button on Home */
+.btn-history {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50px;
+  color: rgba(253, 248, 242, 0.7);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-history:hover {
+  border-color: rgba(255,255,255,0.55);
+  color: #fdf8f2;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.app-footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.app-footer a { color: var(--muted); }
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .app { padding: 0 1rem 3rem; }
+  .passage-text { padding: 0 1rem 1.25rem; }
+  .passage-card-header { padding: 1.25rem 1rem 0; }
+  .verse-selector, .journal-form, .commentary { padding-left: 1rem; padding-right: 1rem; }
+}
