@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { getDailyVerse }  from '../utils/dailyVerse';
 import { getStreak, getTotalDays, journaledToday } from '../utils/streak';
-import { getDailyReadings, formatReadingsSummary, streamProgressInfo } from '../utils/readingPlan';
+import { getDailyReadings, formatReadingsSummary } from '../utils/readingPlan';
+import { streamJournaledProgress } from '../utils/progress';
 import { useAuth }        from '../contexts/AuthContext';
 import { logoutUser, getUsername, deleteAccount } from '../utils/auth';
 import { deleteProfileCloud, saveProfile, resetProgressProfile } from '../utils/profile';
@@ -404,24 +405,22 @@ export default function HomePage({ onOpenJournal, onOpenHistory }) {
         <p className="home-card-label">Today's Reading</p>
         <p className="today-refs">{summary}</p>
         <div className="today-progress">
-          {/* Deduplicate: show one progress row per stream, not per chapter */}
+          {/* Deduplicate: show one progress row per stream, not per chapter.
+              Progress = verses actually journaled, not reading position —
+              so it reflects how much Scripture has been engaged with, not
+              just how far the schedule (sequential or random) has moved. */}
           {[...new Map(readings.map(r => [r.streamKey, r])).values()].map(r => {
-            const info = streamProgressInfo(profile, r.streamKey);
+            const info = streamJournaledProgress(profile, r.streamKey);
             const isRandom = (profile?.streamStyles?.[r.streamKey] || profile?.readingStyle) === 'random';
             return (
               <div key={r.streamKey} className="progress-row">
                 <div className="progress-row-top">
-                  <span className="progress-label">{r.label}</span>
-                  {isRandom
-                    ? <span className="progress-pct">🎲 Random</span>
-                    : <span className="progress-pct">{info.current} / {info.total} chp ({info.pct}%)</span>
-                  }
+                  <span className="progress-label">{r.label}{isRandom ? ' 🎲' : ''}</span>
+                  <span className="progress-pct">{info.current} / {info.total} verses ({info.pct}%)</span>
                 </div>
-                {!isRandom && (
-                  <div className="progress-track">
-                    <div className="progress-fill" style={{ width: `${info.pct}%` }} />
-                  </div>
-                )}
+                <div className="progress-track">
+                  <div className="progress-fill" style={{ width: `${info.pct}%` }} />
+                </div>
               </div>
             );
           })}

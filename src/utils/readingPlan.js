@@ -268,24 +268,6 @@ export function getStreamTotal(books) {
   return books.reduce((s, b) => s + b.chapters, 0);
 }
 
-/** Progress through a stream as a percentage (sequential only) */
-export function streamProgress(profile, streamKey) {
-  return streamProgressInfo(profile, streamKey).pct;
-}
-
-/**
- * Detailed progress for a stream: { pct, current, total }
- *   pct     — 0-100 percentage
- *   current — chapters completed so far (absolute position in sequence)
- *   total   — total chapters in the stream
- */
-export function streamProgressInfo(profile, streamKey) {
-  const preset = PRESETS[profile?.readingPreset] || PRESETS.nt_psalms;
-  const stream = preset.streams.find(s => s.key === streamKey);
-  if (!stream) return { pct: 0, current: 0, total: 0 };
-
-  const total   = getStreamTotal(stream.books);
-  const current = (profile?.streamPositions?.[streamKey] || 0) % total;
-  const pct     = Math.round((current / total) * 100);
-  return { pct, current, total };
-}
+// Note: journaling progress (shown on Home) is verse-based, not position-based
+// — see utils/progress.js's streamJournaledProgress. Reading position here is
+// only used to pick the next chapter, not to report "how much progress" was made.
