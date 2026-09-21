@@ -75,7 +75,13 @@ function msUntilNextReminder(timezone, reminderTime = '06:00') {
  */
 async function showNotification() {
   try {
-    const reg = await navigator.serviceWorker.ready;
+    // navigator.serviceWorker.ready never resolves if no SW is registered
+    // (e.g. dev mode, where registration is PROD-only) — race it so the
+    // fallback Notification API kicks in instead of hanging forever.
+    const reg = await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('no service worker')), 1500)),
+    ]);
     await reg.showNotification('Daily Bible Journal', {
       body:    '📖 Your daily devotion is waiting.',
       icon:    '/icon.svg',

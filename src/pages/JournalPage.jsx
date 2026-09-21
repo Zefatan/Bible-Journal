@@ -52,14 +52,12 @@ export default function JournalPage({ onGoHome }) {
   const [editPickerBook, setEditPickerBook] = useState('');
   const [editPickerCh,   setEditPickerCh]   = useState(1);
   const [editPickerStyle, setEditPickerStyle] = useState('sequential'); // per-stream style during edit
-  const [editedPassages, setEditedPassages] = useState({});  // passageKey → {bookId, bookName, chapter}
 
   function startEdit(group) {
     const books        = streamBooksMap[group.streamKey] || [];
     const firstEntry   = group.entries[0];
-    const override     = editedPassages[firstEntry.passageKey];
-    const bookId       = override?.bookId  || firstEntry.bookId;
-    const chapter      = override?.chapter || firstEntry.chapter;
+    const bookId       = firstEntry.bookId;
+    const chapter      = firstEntry.chapter;
     const validId      = books.find(b => b.id === bookId) ? bookId : books[0]?.id;
 
     setEditingKey(group.streamKey);
@@ -86,11 +84,6 @@ export default function JournalPage({ onGoHome }) {
     if (editPickerStyle === 'sequential' && book) {
       const chapter    = Math.min(editPickerCh, book.chapters);
       const editedPos  = getStreamPosition(books, editPickerBook, chapter);
-
-      setEditedPassages(prev => ({
-        ...prev,
-        [firstEntry.passageKey]: { bookId: editPickerBook, bookName: book.name, chapter },
-      }));
 
       newProfile = {
         ...newProfile,
@@ -287,15 +280,13 @@ export default function JournalPage({ onGoHome }) {
 
               {/* All chapters for this stream */}
               {group.entries.map(r => {
-                const override = editedPassages[r.passageKey];
-                const display  = override || r;
                 return (
                   <PassageCard
                     key={r.passageKey}
                     label={group.label}
-                    bookId={display.bookId}
-                    bookName={display.bookName}
-                    chapter={display.chapter}
+                    bookId={r.bookId}
+                    bookName={r.bookName}
+                    chapter={r.chapter}
                     passageKey={r.passageKey}
                     onSaved={() => handlePassageSubmitted(group)}
                   />
