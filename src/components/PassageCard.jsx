@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { fetchChapter } from '../utils/bibleApi';
 import { parseVerses, parseSid } from '../utils/verseParser';
-import { loadEntry, saveEntry } from '../utils/storage';
+import { loadEntry, saveEntry, deleteEntry } from '../utils/storage';
+import { cloudSave, cloudDeleteEntry } from '../utils/cloudSync';
+import { dateKeyOf } from '../utils/readingPlan';
+import { useAuth } from '../contexts/AuthContext';
 import VerseSelector from './VerseSelector';
 import Commentary from './Commentary';
 
@@ -15,15 +18,21 @@ const JOURNAL_FIELDS = [
 // verseTexts persists verse content so History page can display it without re-fetching.
 const EMPTY = { selectedVerses: [], verseTexts: {}, argument: '', gratitude: '', apply: '', notes: '' };
 
-export default function PassageCard({ label, bookId, bookName, chapter, dateKey, passageKey }) {
-  const storageKey = `${dateKey}-${passageKey}`;
+/**
+ * passageKey is now the full, opaque storage key (content-addressed for
+ * scheduled/custom passages, date-scoped for random ones) — no date prefix
+ * is added here. See readingPlan.js for how each scheme is built.
+ */
+export default function PassageCard({ label, bookId, bookName, chapter, passageKey, onSaved }) {
+  const { user, profile } = useAuth();
 
   const [fetch_, setFetch] = useState({ status: 'idle', content: null, error: null });
   const [verses, setVerses]   = useState([]);
   const [entry, setEntry]     = useState(EMPTY);
   const [saved, setSaved]     = useState(false);
+  const [cloudStatus, setCloudStatus] = useState(null); // null | 'saving' | 'ok' | 'err'
 
-  // ── Fetch passage ────────────────────────────────────────────
+  // ── Fetch passage (needed to parse selectable verses — full text isn't shown) ──
   useEffect(() => {
     setFetch({ status: 'loading', content: null, error: null });
     setVerses([]);
@@ -37,34 +46,67 @@ export default function PassageCard({ label, bookId, bookName, chapter, dateKey,
 
   // ── Load saved journal entry ─────────────────────────────────
   useEffect(() => {
-    setEntry(loadEntry(storageKey) ?? EMPTY);
+    setEntry(loadEntry(passageKey) ?? EMPTY);
     setSaved(false);
-  }, [storageKey]);
+  }, [passageKey]);
 
   function updateEntry(patch) {
     setSaved(false);
     setEntry(prev => ({ ...prev, ...patch }));
   }
 
-  function handleSave(e) {
+  async function handleSave(e) {
     e.preventDefault();
-    saveEntry(storageKey, entry);
+    const payload = {
+      ...entry,
+      _meta: {
+        label, bookName, chapter, passageKey,
+        // The user's own local calendar day, not UTC — otherwise an early
+        // morning devotion east of UTC gets silently credited to "yesterday".
+        savedDate: dateKeyOf(new Date(), profile?.timezone),
+      },
+    };
+    // Always save to localStorage first (works offline)
+    saveEntry(passageKey, payload);
     setSaved(true);
+    onSaved?.();
+
+    // Also push to cloud if the user is signed in
+    if (user) {
+      setCloudStatus('saving');
+      try {
+        await cloudSave(user.uid, passageKey, payload);
+        setCloudStatus('ok');
+        setTimeout(() => setCloudStatus(null), 2000);
+      } catch {
+        setCloudStatus('err');
+        setTimeout(() => setCloudStatus(null), 3000);
+      }
+    }
+  }
+
+  function handleClear() {
+    if (!window.confirm('Clear this journal entry? This removes your written notes and verse selection for this passage.')) return;
+    deleteEntry(passageKey);
+    if (user?.uid) cloudDeleteEntry(user.uid, passageKey);
+    setEntry(EMPTY);
+    setSaved(false);
   }
 
   const reference = `${bookName} ${chapter}`;
+  const hasSavedContent = saved || entry.selectedVerses.length > 0 ||
+    ['argument', 'gratitude', 'apply', 'notes'].some(k => entry[k]?.trim());
 
   return (
     <article className="passage-card">
 
-      {/* ── Passage text ──────────────────────────────────────── */}
       <header className="passage-card-header">
         <p className="passage-label">{label}</p>
         <h2 className="passage-reference">{reference}</h2>
       </header>
 
       {fetch_.status === 'loading' && (
-        <p className="passage-loading">Loading passage…</p>
+        <p className="passage-loading">Loading verses…</p>
       )}
 
       {fetch_.status === 'error' && (
@@ -85,19 +127,13 @@ export default function PassageCard({ label, bookId, bookName, chapter, dateKey,
         </div>
       )}
 
-      {fetch_.status === 'ok' && (
-        <div
-          className="passage-text"
-          dangerouslySetInnerHTML={{ __html: fetch_.content }}
-        />
-      )}
-
-      {/* ── Journal (only shown once passage is loaded) ───────── */}
+      {/* ── Journal (verses + reflection — the passage text itself isn't
+             repeated here since each verse already shows its own text) ──── */}
       {fetch_.status === 'ok' && (
         <form className="journal-form" onSubmit={handleSave}>
           <h3 className="section-heading">Journal — {reference}</h3>
 
-          {/* Verse selector */}
+          {/* Verse selector — doubles as the reading view */}
           <VerseSelector
             verses={verses}
             selected={entry.selectedVerses}
@@ -145,7 +181,15 @@ export default function PassageCard({ label, bookId, bookName, chapter, dateKey,
 
           <div className="form-footer">
             <button type="submit" className="btn-save">Save Entry</button>
-            {saved && <span className="save-confirm">Saved</span>}
+            {hasSavedContent && (
+              <button type="button" className="btn-clear-entry" onClick={handleClear}>
+                🗑 Clear
+              </button>
+            )}
+            {saved && <span className="save-confirm">✓ Saved</span>}
+            {cloudStatus === 'saving' && <span className="save-cloud save-cloud--saving">☁ Syncing…</span>}
+            {cloudStatus === 'ok'     && <span className="save-cloud save-cloud--ok">☁ Synced</span>}
+            {cloudStatus === 'err'    && <span className="save-cloud save-cloud--err">⚠ Sync failed</span>}
           </div>
         </form>
       )}

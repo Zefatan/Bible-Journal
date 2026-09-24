@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Rounded background -->
+  <rect width="512" height="512" rx="96" fill="#5c3d1e"/>
+  <!-- Book body -->
+  <rect x="100" y="84" width="312" height="344" rx="18" fill="#fdf8f2"/>
+  <!-- Spine highlight -->
+  <rect x="100" y="84" width="56" height="344" rx="18" fill="#c9a87a"/>
+  <rect x="130" y="84" width="26" height="344" fill="#c9a87a"/>
+  <!-- Cross vertical -->
+  <rect x="232" y="172" width="48" height="152" rx="10" fill="#6b4c2a"/>
+  <!-- Cross horizontal -->
+  <rect x="178" y="226" width="156" height="48" rx="10" fill="#6b4c2a"/>
+</svg>
