@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { scheduleNotification, cancelScheduledNotification } from './utils/notifications';
+import { registerPush } from './utils/push';
 import { applyTheme, saveThemeLocal, DEFAULT_THEME, applyBackground, saveBackgroundLocal } from './utils/theme';
 import AuthPage      from './pages/AuthPage';
 import OnboardingPage from './pages/OnboardingPage';
@@ -12,15 +13,21 @@ function AppRoutes() {
   const { user, syncing, profile, setProfile } = useAuth();
   const [page, setPage] = useState('home');
 
-  // Schedule the daily reminder whenever profile changes — and cancel it
-  // outright when notifications are off, so a stale timer never fires.
+  // Prefer server push (fires with the app closed); the in-page timer is only
+  // a fallback for browsers/dev builds where push registration isn't possible.
   useEffect(() => {
-    if (profile?.notificationsEnabled && profile?.timezone) {
-      scheduleNotification(profile.timezone, profile.reminderTime);
-    } else {
+    if (!profile?.notificationsEnabled || !profile?.timezone) {
       cancelScheduledNotification();
+      return;
     }
-  }, [profile?.notificationsEnabled, profile?.timezone, profile?.reminderTime]);
+    let cancelled = false;
+    registerPush(user?.uid).then(pushed => {
+      if (cancelled) return;
+      if (pushed) cancelScheduledNotification();
+      else scheduleNotification(profile.timezone, profile.reminderTime);
+    });
+    return () => { cancelled = true; };
+  }, [user?.uid, profile?.notificationsEnabled, profile?.timezone, profile?.reminderTime]);
 
   // Apply the profile's theme across every page (and cache it for next load).
   useEffect(() => {

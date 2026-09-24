@@ -26,4 +26,4 @@ if (isConfigured) {
   db   = getFirestore(app);
 }
 
-export { auth, db, isConfigured };
+export { app, auth, db, isConfigured };

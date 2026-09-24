@@ -12,6 +12,7 @@ import {
   requestNotificationPermission, notificationsSupported, sendTestNotification,
   getPermissionState, cancelScheduledNotification,
 } from '../utils/notifications';
+import { unregisterPush } from '../utils/push';
 import ChangePlanPanel from '../components/ChangePlanPanel';
 import FeedbackPanel from '../components/FeedbackPanel';
 import ThemePicker from '../components/ThemePicker';
@@ -76,6 +77,7 @@ export default function HomePage({ onOpenJournal, onOpenHistory }) {
   async function handleSignOut() {
     if (!window.confirm('Sign out? Your entries are safely saved to your account.')) return;
     setSigningOut(true);
+    await unregisterPush(user?.uid);
     clearAllLocalData();
     // Reset appearance immediately so the Sign In screen doesn't briefly
     // show this account's colour/photo before the next reload picks defaults.
@@ -177,6 +179,7 @@ export default function HomePage({ onOpenJournal, onOpenHistory }) {
   async function handleDeleteAccount() {
     setDeleting(true);
     try {
+      await unregisterPush(user?.uid);
       clearAllLocalData();
       applyTheme(DEFAULT_THEME);
       applyBackground('none', null);
